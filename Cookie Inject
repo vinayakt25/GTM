@@ -1,0 +1,30 @@
+<script>
+ 
+ var cookieName = "email"; 
+ var cookieValue = {{email - custom}}; // Insert the afforementioned URL variable surrounded by curly braces
+ var expirationTime = 420; // One month in seconds. Feel free to change the time
+expirationTime = expirationTime * 1000;
+ var date = new Date(); 
+ var dateTimeNow = date.getTime(); 
+
+ date.setTime(dateTimeNow + expirationTime);
+ var expirationTime = date.toUTCString();
+  document.cookie = cookieName+"="+cookieValue+"; expires="+expirationTime+"; path=/; domain=." + location.hostname.replace(/^www\./i, ""); // Sets cookie for all subdomains
+</script>  
+<script>
+
+  
+ var cookieName = "phone_number"; 
+ var cookieValue = {{Phone - custom}}; // Insert the afforementioned URL variable surrounded by curly braces
+ var expirationTime = 420; // One month in seconds. Feel free to change the time
+ expirationTime = expirationTime * 1000;
+ var date = new Date(); 
+ var dateTimeNow = date.getTime(); 
+
+ date.setTime(dateTimeNow + expirationTime);
+ var expirationTime = date.toUTCString();
+  document.cookie = cookieName+"="+cookieValue+"; expires="+expirationTime+"; path=/; domain=." + location.hostname.replace(/^www\./i, ""); // Sets cookie for all subdomains
+</script>  
+<script>
+
+  
