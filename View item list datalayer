@@ -1,0 +1,189 @@
+view item list 
+
+<script>  
+ 
+  var ecommerce = {{EE - Purchase Object - Using Template}};
+ 
+  var cc = document.getElementsByClassName("myacc_order_details_body_right")[0].innerText.split(" ")[0];
+  if (cc == "₹")
+  {
+    cc = "INR";
+  }
+  ecommerce.ecommerce.currencyCode= cc;
+
+  
+//Function to generate Unique ID for product
+
+  function genID(s)
+  {
+    var hash = 0;
+    for (j = 0; j < s.length; j++)
+    {
+        char = s.charCodeAt(j);
+        hash = ((hash << 5) - hash) + char;
+        hash |= 0;
+    }
+    return Math.abs(hash);
+  }
+
+  
+  var products= [];
+  var variant = "";
+  
+//Product object 
+  function product(name, id, price, brand, variant, category,qty)
+  {
+   this.name = name.toUpperCase();
+   this.price = price;  
+   this.id = id;  
+   this.brand = brand.toUpperCase(); 
+   this.variant = variant.toUpperCase();  
+    this.category = category.toUpperCase();
+   this.quantity =qty;
+  };
+  
+  var TransactionID = document.getElementsByClassName("order_dtl_id")[0].innerText;
+  var carttotal = parseFloat(document.getElementsByClassName("amount-value-amount")[0].innerText.split(" ")[1]);
+  var shipping = 0;
+  
+//Loop to get the entire length of the product list
+  for (i = 0; i <document.getElementsByClassName("chk-item-txt-blk").length; i++)
+  {
+    var name = document.getElementsByClassName("chk-item-txt-blk")[i].innerText.split("\n")[0].toUpperCase();
+   
+    var deliveries = 1;
+    var qty = document.getElementsByClassName("chk-qty")[i+1].innerText;
+    
+    if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("refundable")!= null)
+    {
+      var id = genID(name);
+      var price = 150.00;
+      var brand = "Misc";
+      var variant = "20 LTR JAR";
+      var category = "NA";
+      var qty = parseInt(document.getElementsByClassName("product_total_amt")[i+1].innerText/150);          
+    }
+     else if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("faucet")!= null)
+     { 
+      var id = genID(name);
+      var price = 150.00;
+      var brand = "Misc";
+      var variant = "NA";
+      var category = "ONETIME";
+      var qty = parseInt(document.getElementsByClassName("chk-qty")[i+1].innerText);
+     
+     }
+    else
+    {
+      var id = genID(name);
+      
+    
+//To find the BRAND of the product using match() function       
+        var brand= "BISLERI";
+    if(name.toLowerCase().match("fonzo") != null)
+    {
+      brand= "fonzo";
+    }
+    
+    if(name.toLowerCase().match("vedica") != null)
+    {
+      brand= "vedica";
+    }
+    if(name.toLowerCase().match("spyci") != null)
+    {
+      brand= "spyci";
+    }
+    
+     if(name.toLowerCase().match("limonata") != null)
+    {
+      brand= "limonata";
+    }
+   
+       
+//To find the VARIANT of the product using match() function         
+    if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("20ltr") !=null)
+    {
+      variant= "20 ltr";
+    }
+    
+    if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("10ltr") !=null)
+    {
+      variant= "10 ltr";
+    }
+    
+    if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("5ltr") !=null)
+    {
+      variant= "5 ltr";
+    }
+     
+    if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("2ltr") !=null)
+    {
+      variant= "2 ltr";
+    }
+     
+    if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("1ltr") !=null)
+    {
+      variant= "1 ltr";
+    }
+     
+    if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("750ml") !=null)
+    {
+      variant= "750 ml";
+    }
+    
+     if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("600ml") !=null)
+    {
+      variant= "600 ml";
+    }
+    
+     if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("500ml") !=null)
+    {
+      variant= "500 ml";
+    }
+    
+     if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("300ml") !=null)
+    {
+      variant= "300 ml";
+    }
+    
+     if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("250ml") !=null)
+    {
+      variant= "250 ml";
+    }
+     
+  
+      var price = parseFloat(document.getElementsByClassName("chk-item-txt-blk")[i].innerText.substring(document.getElementsByClassName("chk-item-txt-blk")[i].innerText.indexOf("₹")+2,document.getElementsByClassName("chk-item-txt-blk")[i].innerText.length).split("\n")[0].split(" ")[0]);
+     
+      if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("refundable")== null)
+      {
+//Shipping calculation based on adittional charges for 20,10,5LTR variant      
+          if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("10ltr") !=null || name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("20ltr") || name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("5ltr") !=null)
+         {
+           shipping += (15*qty);
+         }
+      }  
+       var category="ONETIME";    
+    }
+   
+    var CurrProduct = new product(name, id, price, brand, variant, category,qty);
+    products.push(CurrProduct);
+}
+  
+
+  ecommerce.ecommerce.purchase.actionField.id=TransactionID;
+  ecommerce.ecommerce.purchase.actionField.revenue=carttotal;
+  ecommerce.ecommerce.purchase.actionField.shipping=shipping;
+  ecommerce.ecommerce.purchase.actionField.coupon="COD"+'*'+{{CV- PinCode}};
+  ecommerce.ecommerce.purchase.products=products;
+  
+  
+
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push(ecommerce);
+
+  window.dataLayer.push({'event' : 'purchase'});
+  window.dataLayer.push({'PinCodeOrderID' : TransactionID});
+ 
+
+</script>
