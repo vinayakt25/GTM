@@ -1,0 +1,207 @@
+Datalayer Implementation
+
+
+<script>  
+  
+  var ecommerce = {{EE - Product Add to Cart Object - Using Template}};
+  
+  var cc = document.getElementsByClassName("productDetail_price")[0].innerText.split(" ")[0];
+  if (cc == "₹")
+  {
+    cc = "INR"; 
+  }
+  ecommerce.ecommerce.currencyCode = cc;
+  
+  var products = [];
+
+  
+//Function to check the selected category 
+  
+  function radio() 
+ {
+   var buttons = document.getElementsByName("delivered");
+   for (var i = 0;i < buttons.length;i++)
+   {
+     if(buttons[i].checked) 
+     {
+        if (buttons[i].value==1)
+        var a="ONETIME";
+        else if (buttons[i].value==0)
+        var a="Subscribe & Save 5%";
+        return a;
+     }
+   } 
+ }  
+
+  
+//Function to generate Unique ID for product
+  
+  function genID(s) 
+  {
+    var hash = 0;
+    for (j = 0; j < s.length; j++) 
+    {
+        char = s.charCodeAt(j);
+        hash = ((hash << 5) - hash) + char;
+        hash |= 0;
+    }
+    return Math.abs(hash);
+  }
+  
+  
+//Product OBJECT
+    
+  function product(name, id, price,brand, variant, category, quantity) 
+  {
+    this.name = name.toUpperCase();
+    this.id = id;
+    this.price = price;
+    this.brand = brand.toUpperCase();
+    this.variant = variant.toUpperCase();
+    this.category = category.toUpperCase();
+    this.quantity = quantity;
+  };
+  
+   var name = document.getElementsByClassName("productDetail_ttl")[0].innerText.toUpperCase();
+   var variant = "";
+   var id = genID(name);
+
+   var price = parseFloat(document.getElementsByClassName("productDetail_banner_info_blk")[0].innerText.substring(document.getElementsByClassName("productDetail_banner_info_blk")[0].innerText.lastIndexOf("₹")+2,document.getElementsByClassName("productDetail_banner_info_blk")[0].innerText.length-1).split(" ")[0]);
+
+  
+//To find the BRAND of the product using matches() function 
+  
+   var brand = "bisleri";    
+    if(name.toLowerCase().match("fonzo") != null)
+    {
+      brand= "fonzo";
+    }    
+    if(name.toLowerCase().match("vedica") != null)
+    {
+      brand= "vedica";
+    }
+    if(name.toLowerCase().match("spyci") != null)
+    {
+      brand= "spyci";
+    }    
+     if(name.toLowerCase().match("limonata") != null)
+    {
+      brand= "limonata";
+    }
+
+//Check for STAND & FAUCET product  
+ if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("faucet")!= null)
+  {
+    brand="Misc";
+    price= parseFloat(150.00);   
+    variant = "NA";
+  }
+    
+
+//To find the VARIANT of the product using matches() function
+    
+   if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("20ltr") !=null)
+    {
+      variant= "20 ltr";
+    }
+    
+    if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("10ltr") !=null)
+    {
+      variant= "10 ltr";
+    }
+    
+    if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("5ltr") !=null)
+    {
+      variant= "5 ltr";
+    }
+     
+    if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("2ltr") !=null)
+    {
+      variant= "2 ltr";
+    }
+     
+    if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("1ltr") !=null)
+    {
+      variant= "1 ltr";
+    }
+     
+    if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("750ml") !=null)
+    {
+      variant= "750 ml";
+    }
+    
+     if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("600ml") !=null)
+    {
+      variant= "600 ml";
+    }
+    
+     if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("500ml") !=null)
+    {
+      variant= "500 ml";
+    }
+    
+     if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("300ml") !=null)
+    {
+      variant= "300 ml";
+    }
+    
+     if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("250ml") !=null)
+    {
+      variant= "250 ml";
+    }
+    
+      
+  var qty = parseInt(document.getElementsByClassName("productDetail_quant_text")[0].outerText) ;
+
+  
+  
+//To get CATEGORY, FREQUENCY, DURATION of the product
+  
+   if (name.toLowerCase().replace(/\s+/g, '').replace("litre","ltr").match("faucet")!= null)
+  {
+     var ordertype = radio();
+     if (ordertype == "ONETIME")
+     {
+       var category = "ONETIME";
+     }
+     else 
+     {    
+       var frequency = document.getElementsByClassName("productDetail_quant_text productDetail_frequency_text")[0].innerText;
+
+       var duration = document.getElementsByClassName("productDetail_quant_text productDetail_duration_text")[0].innerText;
+       var category = ""
+       category = category.concat(frequency,"-",duration);
+     }
+  }
+  else
+  {
+    category="ONETIME";
+  }
+  
+
+//Push new values into Product Object  
+  var CurrProduct = new product(name, id, price, brand, variant, category,qty);
+
+  products.push(CurrProduct);
+  
+  ecommerce.ecommerce.add.products=products;
+
+  window.dataLayer = window.dataLayer || [];
+  
+
+  
+//Condition to stop blank firing of the tag
+  
+  if (document.getElementsByClassName("productDetail_quant_text")[0].outerText != "Quantity")
+  {
+  
+    if(ecommerce.ecommerce.add.products[0].category.match("SELECT")== null)
+    {
+  window.dataLayer.push(ecommerce);
+  window.dataLayer.push({
+  'event' : 'addToCart'});
+    }
+  }
+
+</script>
+  
